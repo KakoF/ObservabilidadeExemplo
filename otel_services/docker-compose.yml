@@ -17,7 +17,7 @@ services:
       - prometheus
     networks:
       - otel-net
-
+      
   # Jaeger (Traces)
   jaeger:
     image: jaegertracing/opentelemetry-all-in-one

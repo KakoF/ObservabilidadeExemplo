@@ -79,3 +79,10 @@ Processo independente que atua como **agente ou gateway** para receber, transfor
 
 ```text
 [Aplicação com SDK OTel] → envia dados → [OpenTelemetry Collector] → exporta para → [Backend de observabilidade]
+
+
+
+http://host.docker.internal:3100
+http://loki:3100
+http://jaeger:16686
+http://prometheus:9090

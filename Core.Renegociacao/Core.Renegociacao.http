@@ -1,0 +1,6 @@
+@Core.Renegociacao_HostAddress = http://localhost:5084
+
+GET {{Core.Renegociacao_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

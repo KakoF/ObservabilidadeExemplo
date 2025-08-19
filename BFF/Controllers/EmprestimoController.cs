@@ -26,7 +26,7 @@ namespace BFF.Controllers
 		{
 			Random random = new Random();
 			int randomNumber = random.Next(0, 11);
-			if (randomNumber == 4 || randomNumber == 8 || randomNumber == 10)
+			if (randomNumber == 5)
 			{
 				throw new Exception($"Random number is {randomNumber}");
 			}
@@ -37,7 +37,7 @@ namespace BFF.Controllers
 				throw new Exception(await response.Content.ReadAsStringAsync());
 			}
 
-			string conteudo = await response.Content.ReadAsStringAsync();
+			var conteudo = await response.Content.ReadFromJsonAsync<object>();
 			return Ok(conteudo);
 		}
 	}
