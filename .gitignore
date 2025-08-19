@@ -52,3 +52,6 @@ CodeCoverage/
 *.VisualState.xml
 TestResult.xml
 nunit-*.xml
+/Core.Renegociacao/.vs/Core.Renegociacao
+/BFF/.vs/BFF
+/Core/.vs/Core
