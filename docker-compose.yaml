@@ -4,7 +4,7 @@ services:
       context: ./BFF
       dockerfile: Dockerfile
     ports:
-      - "7238:7238"  # Externo:Interno
+      - "5121:8080"  # Externo:Interno
     networks:
       - otel-net
     environment:
@@ -15,7 +15,18 @@ services:
       context: ./Core
       dockerfile: Dockerfile
     ports:
-      - "7075:7075"
+      - "5204:8080"
+    networks:
+      - otel-net
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+
+  core-renegociacao:
+    build:
+      context: ./Core.Renegociacao
+      dockerfile: Dockerfile
+    ports:
+      - "5084:8080"
     networks:
       - otel-net
     environment:
