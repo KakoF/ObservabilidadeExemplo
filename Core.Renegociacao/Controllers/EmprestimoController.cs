@@ -13,16 +13,15 @@ namespace Core.Renegociacao.Controllers
 		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory)
 		{
 			_httpClient = httpClientFactory.CreateClient();
-			_httpClient.BaseAddress = new Uri("https://localhost:7075/");
+			_httpClient.BaseAddress = new Uri("http://localhost:8000/api/");
 			_httpClient.DefaultRequestHeaders.Accept.Clear();
 			_httpClient.DefaultRequestHeaders.Accept.Add(
 				new MediaTypeWithQualityHeaderValue("application/json"));
 			_logger = logger;
 		}
 
-		[HttpGet]
-		[HttpGet]
-		public async Task<IActionResult> Get()
+		[HttpGet("{id:int}")]
+		public async Task<IActionResult> Get(int id)
 		{
 			Random random = new Random();
 			int randomNumber = random.Next(0, 11);
@@ -31,16 +30,16 @@ namespace Core.Renegociacao.Controllers
 				throw new Exception($"Random number is {randomNumber}");
 			}
 			await Task.Delay(TimeSpan.FromSeconds(randomNumber));
-			/*HttpResponseMessage response = await _httpClient.GetAsync("Emprestimo");
+			HttpResponseMessage response = await _httpClient.GetAsync($"emprestimos/{id}");
 
 			if (!response.IsSuccessStatusCode)
 			{
 				throw new Exception(await response.Content.ReadAsStringAsync());
 			}
 
-			string conteudo = await response.Content.ReadAsStringAsync();
-			return Ok(conteudo);*/
-			return Ok(new { Result = "Core.Renegociacao" });
+			var conteudo = await response.Content.ReadFromJsonAsync<object>();
+			return Ok(conteudo);
+			//return Ok(new { Result = "Core.Renegociacao" });
 		}
 	}
 }

@@ -21,8 +21,8 @@ namespace Core.Controllers
 			_logger = logger;
 		}
 
-		[HttpGet]
-		public async Task<IActionResult> Get()
+		[HttpGet("{id:int}")]
+		public async Task<IActionResult> Get(int id)
 		{
 			Random random = new Random();
 			int randomNumber = random.Next(0, 11);
@@ -31,7 +31,7 @@ namespace Core.Controllers
 				throw new Exception($"Random number is {randomNumber}");
 			}
 			await Task.Delay(TimeSpan.FromSeconds(randomNumber));
-			HttpResponseMessage response = await _httpClient.GetAsync("Emprestimo");
+			HttpResponseMessage response = await _httpClient.GetAsync($"Emprestimo/{id}");
 
 			if (!response.IsSuccessStatusCode)
 			{
