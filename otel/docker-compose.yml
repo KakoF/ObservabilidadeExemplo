@@ -1,0 +1,18 @@
+version: '3.8'
+
+services:
+  otel-collector:
+    image: otel/opentelemetry-collector:latest
+    container_name: otel-collector
+    command: ["--config=/etc/otel-config.yaml"]
+    volumes:
+      - ./otel-config.yaml:/etc/otel-config.yaml  # Mapeia o arquivo de configuração
+    ports:
+      - "4317:4317"  # OTLP gRPC (principal para receber dados)
+      - "4318:4318"  # OTLP HTTP (alternativo)
+    networks:
+      - otel-net
+
+networks:
+  otel-net:
+    driver: bridge
