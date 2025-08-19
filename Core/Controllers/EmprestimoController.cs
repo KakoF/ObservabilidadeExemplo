@@ -14,7 +14,7 @@ namespace Core.Controllers
 		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory)
 		{
 			_httpClient = httpClientFactory.CreateClient();
-			_httpClient.BaseAddress = new Uri("https://localhost:7278/");
+			_httpClient.BaseAddress = new Uri("http://localhost:5084/");
 			_httpClient.DefaultRequestHeaders.Accept.Clear();
 			_httpClient.DefaultRequestHeaders.Accept.Add(
 				new MediaTypeWithQualityHeaderValue("application/json"));
