@@ -15,6 +15,7 @@ namespace Core.Controllers
 		{
 			_httpClient = httpClientFactory.CreateClient();
 			_httpClient.BaseAddress = new Uri("http://localhost:5084/");
+			//_httpClient.BaseAddress = new Uri("http://core-renegociacao:8080/");
 			_httpClient.DefaultRequestHeaders.Accept.Clear();
 			_httpClient.DefaultRequestHeaders.Accept.Add(
 				new MediaTypeWithQualityHeaderValue("application/json"));
@@ -26,7 +27,7 @@ namespace Core.Controllers
 		{
 			Random random = new Random();
 			int randomNumber = random.Next(0, 11);
-			if(randomNumber == 6)
+			if (randomNumber == 6)
 			{
 				throw new Exception($"Random number is {randomNumber}");
 			}

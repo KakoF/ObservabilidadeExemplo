@@ -31,8 +31,28 @@ services:
       - otel-net
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
-
-
+  laravel-app:
+    build:
+      context: ./Laravel-Emprestimos
+      dockerfile: Dockerfile
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./Laravel-Emprestimos:/var/www
+    working_dir: /var/www
+    command: php artisan serve --host=0.0.0.0 --port=8000
+    networks:
+      - otel-net
+    depends_on:
+      - db
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - DB_HOST=db
+      - DB_PORT=3306
+      - DB_DATABASE=emprestimos_db
+      - DB_USERNAME=root
+      - DB_PASSWORD=root
   # OpenTelemetry Collector
   otel-collector:
     image: otel/opentelemetry-collector-contrib:0.96.0
@@ -92,9 +112,32 @@ services:
       - loki
     networks:
       - otel-net
+  
+  db:
+    container_name: db
+    image: mysql:8.0
+    restart: always
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_DATABASE: emprestimos_db
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - dbdata:/var/lib/mysql
+    networks:
+      - otel-net
+
+  
+  redis:
+    image: redis
+    restart: always
+    command: redis-server --requirepass emprestimo!@
+    ports:
+      - '6379:6379'
 
 volumes:
   grafana-storage:
+  dbdata:
 
 networks:
   otel-net:

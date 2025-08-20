@@ -13,7 +13,8 @@ namespace Core.Renegociacao.Controllers
 		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory)
 		{
 			_httpClient = httpClientFactory.CreateClient();
-			_httpClient.BaseAddress = new Uri("http://localhost:8000/api/");
+			//_httpClient.BaseAddress = new Uri("http://localhost:9000/api/");
+			_httpClient.BaseAddress = new Uri("http://laravel-app:8000/api/");
 			_httpClient.DefaultRequestHeaders.Accept.Clear();
 			_httpClient.DefaultRequestHeaders.Accept.Add(
 				new MediaTypeWithQualityHeaderValue("application/json"));

@@ -132,3 +132,25 @@ curl -X POST http://localhost:8000/api/emprestimos \
     "data_solicitacao": "2024-01-16"
   }'
 ```
+
+
+
+
+docker-compose up -d
+docker exec -it laravel-app php artisan config:clear
+docker exec -it laravel-app php artisan migrate
+
+php artisan migrate
+
+
+curl --location 'http://localhost:8000/api/emprestimos' \
+--header 'Content-Type: application/json' \
+--header 'Accept: application/json' \
+--data '{
+    "nome_solicitante": "Maria Oliveira",
+    "valor": 15000,
+    "parcelas": 24,
+    "taxa_juros": 2.5,
+    "data_solicitacao": "2024-01-20",
+    "observacoes": "Empréstimo para compra de veículo"
+  }'
