@@ -31,7 +31,7 @@ namespace Core.Renegociacao.Controllers
 				throw new Exception($"Random number is {randomNumber}");
 			}
 			await Task.Delay(TimeSpan.FromSeconds(randomNumber));
-			HttpResponseMessage response = await _httpClient.GetAsync($"emprestimos/{id}");
+			/*HttpResponseMessage response = await _httpClient.GetAsync($"emprestimos/{id}");
 
 			if (!response.IsSuccessStatusCode)
 			{
@@ -39,8 +39,8 @@ namespace Core.Renegociacao.Controllers
 			}
 
 			var conteudo = await response.Content.ReadFromJsonAsync<object>();
-			return Ok(conteudo);
-			//return Ok(new { Result = "Core.Renegociacao" });
+			return Ok(conteudo);*/
+			return Ok(new { Result = "Core.Renegociacao" });
 		}
 	}
 }

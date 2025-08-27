@@ -23,7 +23,7 @@ builder.Services.AddOpenTelemetry()
 		.AddHttpClientInstrumentation()
 		.AddOtlpExporter(options =>
 		{
-			options.Endpoint = new Uri("http://localhost:4317");
+			options.Endpoint = new Uri("http://otel:4317");
 		}))
 	.WithTracing(tracing => tracing
 		.AddAspNetCoreInstrumentation()
@@ -34,18 +34,18 @@ builder.Services.AddOpenTelemetry()
 		)
 		.AddOtlpExporter(opt =>
 		{
-			opt.Endpoint = new Uri("http://localhost:4317");
+			opt.Endpoint = new Uri("http://otel:4317");
 			opt.Protocol = OtlpExportProtocol.Grpc;
 		}));
 
-// Configuração de Logs
+// Configuraï¿½ï¿½o de Logs
 builder.Logging.AddOpenTelemetry(logging =>
 {
 	logging.IncludeFormattedMessage = true;
 	logging.IncludeScopes = true;
 	logging.AddOtlpExporter(options =>
 	{
-		options.Endpoint = new Uri("http://localhost:4317");
+		options.Endpoint = new Uri("http://otel:4317");
 	});
 });
 

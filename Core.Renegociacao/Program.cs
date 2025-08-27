@@ -26,7 +26,7 @@ builder.Services.AddOpenTelemetry()
 		)
 		.AddOtlpExporter(opt =>
 		{
-			opt.Endpoint = new Uri("http://localhost:4317");
+			opt.Endpoint = new Uri("http://otel:4317");
 			opt.Protocol = OtlpExportProtocol.Grpc;
 		}))
 	.WithMetrics(metrics => metrics
@@ -35,7 +35,7 @@ builder.Services.AddOpenTelemetry()
 		.AddHttpClientInstrumentation()
 		.AddOtlpExporter(options =>
 		{
-			options.Endpoint = new Uri("http://localhost:4317");
+			options.Endpoint = new Uri("http://otel:4317");
 		}));
 
 builder.Logging.AddOpenTelemetry(logging =>
@@ -44,15 +44,15 @@ builder.Logging.AddOpenTelemetry(logging =>
 	logging.IncludeScopes = true;
 	logging.AddOtlpExporter(options =>
 	{
-		options.Endpoint = new Uri("http://localhost:4317");
+		options.Endpoint = new Uri("http://otel:4317");
 	});
 });
 
 var app = builder.Build();
 
 
-    app.UseSwagger();
-    app.UseSwaggerUI();
+app.UseSwagger();
+app.UseSwaggerUI();
 
 
 app.UseHttpsRedirection();
