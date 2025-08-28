@@ -10,11 +10,12 @@ namespace BFF.Controllers
 		private readonly HttpClient _httpClient;
 		private readonly ILogger<EmprestimoController> _logger;
 
-		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory)
+		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
 		{
 			_httpClient = httpClientFactory.CreateClient();
 			//_httpClient.BaseAddress = new Uri("http://localhost:5204/");
-			_httpClient.BaseAddress = new Uri("http://core:8080/");
+			//_httpClient.BaseAddress = new Uri("http://core:8080/");
+			_httpClient.BaseAddress = new Uri(configuration["Clients:Core"]!);
 			_httpClient.DefaultRequestHeaders.Accept.Clear();
 			_httpClient.DefaultRequestHeaders.Accept.Add(
 				new MediaTypeWithQualityHeaderValue("application/json"));

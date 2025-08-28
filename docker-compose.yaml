@@ -10,6 +10,8 @@ services:
       - otel-net
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Clients__Otel=http://otel:4317
+      - Clients__Core=http://core:8080/
 
   core:
     container_name: core
@@ -22,6 +24,8 @@ services:
       - otel-net
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Clients__Otel=http://otel:4317
+      - Clients__CoreRenegociacao=http://core-renegociacao:8080/
 
   core-renegociacao:
     container_name: core-renegociacao
@@ -34,6 +38,7 @@ services:
       - otel-net
     environment:
       - ASPNETCORE_ENVIRONMENT=Development
+      - Clients__Otel=http://otel:4317
   #laravel-app:
   #  build:
   #    context: ./Laravel-Emprestimos

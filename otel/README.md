@@ -86,3 +86,21 @@ http://host.docker.internal:3100
 http://loki:3100
 http://jaeger:16686
 http://prometheus:9090
+
+
+- http_server_request_duration_seconds_count → número de requisições
+- http_server_request_duration_seconds_sum → soma total das durações
+- http_server_request_duration_seconds_bucket → distribuição por faixas de tempo
+
+
+increase(http_server_request_duration_seconds_count{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])
+
+histogram_quantile(0.50, sum(rate(http_server_request_duration_seconds_bucket{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])) by (le))
+
+histogram_quantile(0.90, sum(rate(http_server_request_duration_seconds_bucket{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])) by (le))
+
+histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])) by (le))
+
+histogram_quantile(0.99, sum(rate(http_server_request_duration_seconds_bucket{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])) by (le))
+
+histogram_quantile(0.999, sum(rate(http_server_request_duration_seconds_bucket{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])) by (le))
