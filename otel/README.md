@@ -82,10 +82,86 @@ Processo independente que atua como **agente ou gateway** para receber, transfor
 
 
 
+# 📘 Instrumentações OpenTelemetry em .NET
+
+Este documento descreve as principais instrumentações disponíveis no OpenTelemetry para aplicações .NET, explicando o que cada uma coleta e como elas ajudam na observabilidade da aplicação.
+
+---
+
+## 🔧 1. AddAspNetCoreInstrumentation()
+
+Instrumenta o pipeline de requisições HTTP do ASP.NET Core.
+
+### Métricas e Traces coletados:
+- Tempo de resposta por rota
+- Status code das respostas (200, 404, 500 etc.)
+- Método HTTP (`GET`, `POST`, etc.)
+- Exceções lançadas durante o processamento
+
+💡 Ideal para monitorar endpoints e identificar gargalos ou erros.
+
+---
+
+## 🌐 2. AddHttpClientInstrumentation()
+
+Instrumenta chamadas feitas com `HttpClient`.
+
+### Métricas e Traces coletados:
+- Tempo de execução da requisição externa
+- URL de destino
+- Status da resposta
+- Exceções de rede
+
+💡 Útil para rastrear dependências externas como APIs de terceiros.
+
+---
+
+## ⚙️ 3. AddRuntimeInstrumentation()
+
+Coleta métricas do ambiente de execução do .NET.
+
+### Métricas coletadas:
+- Coletas de garbage collector (GC)
+- Número de threads no pool
+- Exceções não tratadas
+- Alocação de memória
+
+💡 Ajuda a entender o comportamento interno da aplicação.
+
+---
+
+## 🧠 4. AddProcessInstrumentation()
+
+Coleta métricas do processo da aplicação no sistema operacional.
+
+### Métricas coletadas:
+- Uso de CPU
+- Memória física (Working Set)
+- Tempo de vida do processo
+- Threads ativas
+
+💡 Excelente para monitorar a saúde geral da aplicação.
+
+---
+
+## 📊 5. AddEventCountersInstrumentation()
+
+Coleta métricas expostas via EventCounters de bibliotecas específicas.
+
+### Fontes configuradas:
+```csharp
+options.AddEventSources("Microsoft.AspNetCore.Hosting", "System.Net.Http");
+
+
+
 http://host.docker.internal:3100
 http://loki:3100
 http://jaeger:16686
 http://prometheus:9090
+
+https://grafana.com/grafana/dashboards/19924-asp-net-core/
+
+https://grafana.com/grafana/dashboards/17706-asp-net-otel-metrics/
 
 
 - http_server_request_duration_seconds_count → número de requisições

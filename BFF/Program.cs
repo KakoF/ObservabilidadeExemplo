@@ -15,19 +15,41 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 var otelUrl = builder.Configuration["Clients:Otel"];
+var resourceBuilder = ResourceBuilder.CreateDefault()
+	.AddService("BFF")
+	.AddAttributes(new[]
+	{
+		new KeyValuePair<string, object>("app", "BFF"),
+		new KeyValuePair<string, object>("env", builder.Environment.EnvironmentName),
+		new KeyValuePair<string, object>("host.name", Environment.MachineName)
+	});
+
 builder.Services.AddOpenTelemetry()
-	.ConfigureResource(resource => resource.AddService("BFF"))
 	.WithMetrics(metrics => metrics
-		.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("BFF"))
+		.SetResourceBuilder(resourceBuilder)
+		.AddView("*", new MetricStreamConfiguration
+		{
+			TagKeys = new[] { "app", "env", "host.name" }
+		})
 		.AddAspNetCoreInstrumentation()
 		.AddHttpClientInstrumentation()
+		.AddRuntimeInstrumentation()
+		.AddProcessInstrumentation()
+		.AddEventCountersInstrumentation(options =>
+		{
+			options.AddEventSources("Microsoft.AspNetCore.Hosting", "System.Net.Http");
+		})
 		.AddOtlpExporter(options =>
 		{
 			options.Endpoint = new Uri(otelUrl);
 		}))
+		/*.AddConsoleExporter(options =>
+		{
+			options.Targets = ConsoleExporterOutputTargets.Debug;
+		}))*/
 	.WithTracing(tracing => tracing
 		.AddAspNetCoreInstrumentation()
-		.AddHttpClientInstrumentation()
+		//.AddHttpClientInstrumentation()
 		.SetResourceBuilder(
 			ResourceBuilder.CreateDefault()
 				.AddService("BFF")  // ?? Nome que aparece no Jaeger

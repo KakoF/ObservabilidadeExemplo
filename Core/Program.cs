@@ -15,12 +15,20 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 var otelUrl = builder.Configuration["Clients:Otel"];
+var resourceBuilder = ResourceBuilder.CreateDefault()
+	.AddService("Core")
+	.AddAttributes(new[]
+	{
+		new KeyValuePair<string, object>("app", "Core"),
+		new KeyValuePair<string, object>("env", builder.Environment.EnvironmentName),
+		new KeyValuePair<string, object>("host.name", Environment.MachineName)
+	});
 
 builder.Services.AddOpenTelemetry()
 	.ConfigureResource(resource => resource.AddService("Core"))
 	.WithTracing(tracing => tracing
 		.AddAspNetCoreInstrumentation()
-		.AddHttpClientInstrumentation()
+		//.AddHttpClientInstrumentation()
 		.SetResourceBuilder(
 			ResourceBuilder.CreateDefault()
 				.AddService("Core")  // ?? Nome que aparece no Jaeger
@@ -31,9 +39,19 @@ builder.Services.AddOpenTelemetry()
 			opt.Protocol = OtlpExportProtocol.Grpc;
 		}))
 	.WithMetrics(metrics => metrics
-	.SetResourceBuilder(ResourceBuilder.CreateDefault().AddService("Core"))
+	.SetResourceBuilder(resourceBuilder)
+		.AddView("*", new MetricStreamConfiguration
+		{
+			TagKeys = new[] { "app", "env", "host.name" }
+		})
 		.AddAspNetCoreInstrumentation()
 		.AddHttpClientInstrumentation()
+		.AddRuntimeInstrumentation()
+		.AddProcessInstrumentation()
+		.AddEventCountersInstrumentation(options =>
+		{
+			options.AddEventSources("Microsoft.AspNetCore.Hosting", "System.Net.Http");
+		})
 		.AddOtlpExporter(options =>
 		{
 			options.Endpoint = new Uri(otelUrl);
