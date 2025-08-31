@@ -25,27 +25,24 @@ var resourceBuilder = ResourceBuilder.CreateDefault()
 		new KeyValuePair<string, object>("host.name", Environment.MachineName)
 	});
 
-
 builder.Services.AddOpenTelemetry()
-	.ConfigureResource(resource => resource.AddService("Core.Renegociacao"))
+	.ConfigureResource(resource => resource.AddService("Core.Renegociacao").AddAttributes(new[]
+	{
+		new KeyValuePair<string, object>("app", "Core.Renegociacao"),
+		new KeyValuePair<string, object>("env", builder.Environment.EnvironmentName),
+		new KeyValuePair<string, object>("host.name", Environment.MachineName)
+	}))
 	.WithTracing(tracing => tracing
 		.AddAspNetCoreInstrumentation()
 		//.AddHttpClientInstrumentation()
-		.SetResourceBuilder(
-			ResourceBuilder.CreateDefault()
-				.AddService("Core.Renegociacao")  // ?? Nome que aparece no Jaeger
-		)
+		.SetResourceBuilder(resourceBuilder)
 		.AddOtlpExporter(opt =>
 		{
 			opt.Endpoint = new Uri(otelUrl);
 			opt.Protocol = OtlpExportProtocol.Grpc;
 		}))
 	.WithMetrics(metrics => metrics
-	.SetResourceBuilder(resourceBuilder)
-		.AddView("*", new MetricStreamConfiguration
-		{
-			TagKeys = new[] { "app", "env", "host.name" }
-		})
+		.SetResourceBuilder(resourceBuilder)
 		.AddAspNetCoreInstrumentation()
 		.AddHttpClientInstrumentation()
 		.AddRuntimeInstrumentation()

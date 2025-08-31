@@ -25,13 +25,14 @@ var resourceBuilder = ResourceBuilder.CreateDefault()
 	});
 
 builder.Services.AddOpenTelemetry()
-	.ConfigureResource(resource => resource.AddService("BFF"))
+	.ConfigureResource(resource => resource.AddService("BFF").AddAttributes(new[]
+	{
+		new KeyValuePair<string, object>("app", "BFF"),
+		new KeyValuePair<string, object>("env", builder.Environment.EnvironmentName),
+		new KeyValuePair<string, object>("host.name", Environment.MachineName)
+	}))
 	.WithMetrics(metrics => metrics
 		.SetResourceBuilder(resourceBuilder)
-		.AddView("*", new MetricStreamConfiguration
-		{
-			TagKeys = new[] { "app", "env", "host.name" }
-		})
 		.AddAspNetCoreInstrumentation()
 		.AddHttpClientInstrumentation()
 		.AddRuntimeInstrumentation()
@@ -51,10 +52,7 @@ builder.Services.AddOpenTelemetry()
 	.WithTracing(tracing => tracing
 		.AddAspNetCoreInstrumentation()
 		//.AddHttpClientInstrumentation()
-		.SetResourceBuilder(
-			ResourceBuilder.CreateDefault()
-				.AddService("BFF")  // ?? Nome que aparece no Jaeger
-		)
+		.SetResourceBuilder(resourceBuilder)
 		.AddOtlpExporter(opt =>
 		{
 			opt.Endpoint = new Uri(otelUrl);
