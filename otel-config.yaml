@@ -17,6 +17,8 @@ exporters:
   # Para Prometheus
   prometheus:
     endpoint: "0.0.0.0:8889"
+    resource_to_telemetry_conversion:
+      enabled: true
 
   # Para Loki - CONFIGURAÇÃO 100% FUNCIONAL
   loki:
