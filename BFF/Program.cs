@@ -25,6 +25,7 @@ var resourceBuilder = ResourceBuilder.CreateDefault()
 	});
 
 builder.Services.AddOpenTelemetry()
+	.ConfigureResource(resource => resource.AddService("BFF"))
 	.WithMetrics(metrics => metrics
 		.SetResourceBuilder(resourceBuilder)
 		.AddView("*", new MetricStreamConfiguration
