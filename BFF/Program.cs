@@ -60,7 +60,11 @@ builder.Services.AddOpenTelemetry()
 			opt.Protocol = OtlpExportProtocol.Grpc;
 		}));
 
-// Configura��o de Logs
+// Configuração de Logs
+builder.Logging.Configure(options =>
+{
+    options.ActivityTrackingOptions = ActivityTrackingOptions.TraceId | ActivityTrackingOptions.SpanId;
+});
 builder.Logging.AddOpenTelemetry(logging =>
 {
 	logging.IncludeFormattedMessage = true;
