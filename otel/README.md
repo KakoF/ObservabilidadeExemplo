@@ -168,7 +168,7 @@ https://grafana.com/grafana/dashboards/17706-asp-net-otel-metrics/
 - http_server_request_duration_seconds_sum → soma total das durações
 - http_server_request_duration_seconds_bucket → distribuição por faixas de tempo
 
-
+sum(increase(http_server_request_duration_seconds_count{exported_job="Core.Renegociacao"}[$__rate_interval]))
 increase(http_server_request_duration_seconds_count{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])
 
 histogram_quantile(0.50, sum(rate(http_server_request_duration_seconds_bucket{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])) by (le))
@@ -180,3 +180,17 @@ histogram_quantile(0.95, sum(rate(http_server_request_duration_seconds_bucket{ex
 histogram_quantile(0.99, sum(rate(http_server_request_duration_seconds_bucket{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])) by (le))
 
 histogram_quantile(0.999, sum(rate(http_server_request_duration_seconds_bucket{exported_job="BFF", http_route="Emprestimo/{id:int}"}[1m])) by (le))
+
+
+
+
+
+choco install k6
+
+winget install k6 --source winget
+
+k6 run index.js
+
+sum(increase(http_server_request_duration_seconds_count{exported_job="Core.Renegociacao"}[1m]))
+
+sum(increase(http_server_request_duration_seconds_count{exported_job="Core.Renegociacao", http_response_status_code="500"}[1m]))
