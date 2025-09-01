@@ -27,8 +27,8 @@ namespace Core.Controllers
 		public async Task<IActionResult> Get(int id)
 		{
 			Random random = new Random();
-			int randomNumber = random.Next(0, 11);
-			if (randomNumber == 6)
+			int randomNumber = random.Next(0, 6);
+			if (randomNumber == 2)
 			{
 				throw new Exception($"Random number is {randomNumber}");
 			}

@@ -25,8 +25,8 @@ namespace Core.Renegociacao.Controllers
 		public async Task<IActionResult> Get(int id)
 		{
 			Random random = new Random();
-			int randomNumber = random.Next(0, 11);
-			if (randomNumber == 7)
+			int randomNumber = random.Next(0, 6);
+			if (randomNumber == 1)
 			{
 				throw new Exception($"Random number is {randomNumber}");
 			}
