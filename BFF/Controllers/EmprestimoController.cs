@@ -48,7 +48,7 @@ namespace BFF.Controllers
 
 				var conteudo = await response.Content.ReadFromJsonAsync<object>();
 				// Registra métricas
-				_metrics.RegistrarRequisicao("processamento_sucesso");
+				_metrics.RegistrarRequisicao($"Emprestimo/{id}");
 				_metrics.IncrementarUsuariosAtivos();
 
 				return Ok(conteudo);
@@ -56,7 +56,7 @@ namespace BFF.Controllers
 			finally
 			{
 				stopwatch.Stop();
-				_metrics.RegistrarTempoProcessamento(stopwatch.ElapsedMilliseconds, $"Emprestimo/{id}", "processar_requisicao");
+				_metrics.RegistrarTempoProcessamento(stopwatch.ElapsedMilliseconds, $"Emprestimo/{id}");
 			}
 		}
 	}

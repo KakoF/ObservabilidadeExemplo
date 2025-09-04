@@ -55,11 +55,10 @@ namespace BFF.Meters
 			_requisicoesCounter.Add(quantidade, new KeyValuePair<string, object?>("tipo", tipoRequisicao));
 		}
 
-		public void RegistrarTempoProcessamento(double tempoMs, string endpoint, string operacao)
+		public void RegistrarTempoProcessamento(double tempoMs, string endpoint)
 		{
 			_tempoProcessamentoHistogram.Record(
 				tempoMs,
-				new KeyValuePair<string, object?>("operacao", operacao),
 				new KeyValuePair<string, object?>("endpoint", endpoint));
 		}
 
