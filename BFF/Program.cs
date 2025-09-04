@@ -1,3 +1,4 @@
+using BFF.Meters;
 using BFF.Middleware;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
@@ -41,6 +42,7 @@ builder.Services.AddOpenTelemetry()
 		{
 			options.AddEventSources("Microsoft.AspNetCore.Hosting", "System.Net.Http");
 		})
+		.AddMeter("BFF.*")
 		.AddOtlpExporter(options =>
 		{
 			options.Endpoint = new Uri(otelUrl);
@@ -59,6 +61,7 @@ builder.Services.AddOpenTelemetry()
 			opt.Protocol = OtlpExportProtocol.Grpc;
 		}));
 
+builder.Services.AddSingleton<AppMetrics>();
 // Configuração de Logs
 builder.Logging.Configure(options =>
 {

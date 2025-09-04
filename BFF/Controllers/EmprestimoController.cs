@@ -1,3 +1,4 @@
+using BFF.Meters;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 
@@ -9,8 +10,9 @@ namespace BFF.Controllers
 	{
 		private readonly HttpClient _httpClient;
 		private readonly ILogger<EmprestimoController> _logger;
+		private readonly AppMetrics _metrics;
 
-		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration)
+		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory, IConfiguration configuration, AppMetrics metrics)
 		{
 			_httpClient = httpClientFactory.CreateClient();
 			//_httpClient.BaseAddress = new Uri("http://localhost:5204/");
@@ -20,26 +22,42 @@ namespace BFF.Controllers
 			_httpClient.DefaultRequestHeaders.Accept.Add(
 				new MediaTypeWithQualityHeaderValue("application/json"));
 			_logger = logger;
+			_metrics = metrics;
 		}
 
 		[HttpGet("{id:int}")]
 		public async Task<IActionResult> Get(int id)
 		{
-			Random random = new Random();
-			int randomNumber = random.Next(0, 6);
-			if (randomNumber == 5)
-			{
-				throw new Exception($"Random number is {randomNumber}");
-			}
-			HttpResponseMessage response = await _httpClient.GetAsync($"Emprestimo/{id}");
 
-			if (!response.IsSuccessStatusCode)
-			{
-				throw new Exception(await response.Content.ReadAsStringAsync());
-			}
+			var stopwatch = System.Diagnostics.Stopwatch.StartNew();
 
-			var conteudo = await response.Content.ReadFromJsonAsync<object>();
-			return Ok(conteudo);
+			try
+			{
+				Random random = new Random();
+				int randomNumber = random.Next(0, 6);
+				if (randomNumber == 5)
+				{
+					throw new Exception($"Random number is {randomNumber}");
+				}
+				HttpResponseMessage response = await _httpClient.GetAsync($"Emprestimo/{id}");
+
+				if (!response.IsSuccessStatusCode)
+				{
+					throw new Exception(await response.Content.ReadAsStringAsync());
+				}
+
+				var conteudo = await response.Content.ReadFromJsonAsync<object>();
+				// Registra métricas
+				_metrics.RegistrarRequisicao("processamento_sucesso");
+				_metrics.IncrementarUsuariosAtivos();
+
+				return Ok(conteudo);
+			}
+			finally
+			{
+				stopwatch.Stop();
+				_metrics.RegistrarTempoProcessamento(stopwatch.ElapsedMilliseconds, $"Emprestimo/{id}", "processar_requisicao");
+			}
 		}
 	}
 }
