@@ -1,3 +1,4 @@
+using Core.Renegociacao.Meters;
 using Core.Renegociacao.Middleware;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
@@ -51,12 +52,12 @@ builder.Services.AddOpenTelemetry()
 		{
 			options.AddEventSources("Microsoft.AspNetCore.Hosting", "System.Net.Http");
 		})
-
+		.AddMeter("CoreRenegociacao.*")
 		.AddOtlpExporter(options =>
 		{
 			options.Endpoint = new Uri(otelUrl);
 		}));
-
+builder.Services.AddSingleton<MetricsHelper>();
 // Configuração de Logs
 builder.Logging.Configure(options =>
 {
