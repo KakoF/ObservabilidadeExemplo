@@ -31,7 +31,11 @@ namespace BFF.Middleware
 					_ => "outro"
 				};
 
-				_metrics.RegistrarRequisicao($"http_{statusType}");
+				_metrics.RegistrarRequisicao($"http_{statusType}", context.Request.Path);
+			}
+			catch
+			{
+				_metrics.RegistrarRequisicao($"http_erro_servidor", context.Request.Path);
 			}
 			finally
 			{

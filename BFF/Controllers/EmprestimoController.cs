@@ -48,7 +48,6 @@ namespace BFF.Controllers
 
 				var conteudo = await response.Content.ReadFromJsonAsync<object>();
 				// Registra métricas
-				_metrics.RegistrarRequisicao($"Emprestimo/{id}");
 				_metrics.IncrementarUsuariosAtivos();
 
 				return Ok(conteudo);

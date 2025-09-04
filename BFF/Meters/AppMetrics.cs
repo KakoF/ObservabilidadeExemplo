@@ -50,9 +50,11 @@ namespace BFF.Meters
 		}
 
 		// Métodos para registrar métricas
-		public void RegistrarRequisicao(string tipoRequisicao, int quantidade = 1)
+		public void RegistrarRequisicao(string tipoRequisicao, string endpoint, int quantidade = 1)
 		{
-			_requisicoesCounter.Add(quantidade, new KeyValuePair<string, object?>("tipo", tipoRequisicao));
+			_requisicoesCounter.Add(quantidade, 
+				new KeyValuePair<string, object?>("tipo", tipoRequisicao),
+				new KeyValuePair<string, object?>("endpoint", endpoint));
 		}
 
 		public void RegistrarTempoProcessamento(double tempoMs, string endpoint)
