@@ -1,4 +1,6 @@
 ﻿using Core.Renegociacao.Meters;
+using Core.Renegociacao.Records;
+using Core.Renegociacao.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Net.Http.Headers;
 
@@ -11,8 +13,9 @@ namespace Core.Renegociacao.Controllers
 		private readonly HttpClient _httpClient;
 		private readonly ILogger<EmprestimoController> _logger;
 		private readonly MetricsHelper _metrics;
+		private readonly EmprestimoService _service;
 
-		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory, MetricsHelper metrics)
+		public EmprestimoController(ILogger<EmprestimoController> logger, IHttpClientFactory httpClientFactory, MetricsHelper metrics, EmprestimoService service)
 		{
 			_httpClient = httpClientFactory.CreateClient();
 			//_httpClient.BaseAddress = new Uri("http://localhost:9000/api/");
@@ -22,7 +25,8 @@ namespace Core.Renegociacao.Controllers
 				new MediaTypeWithQualityHeaderValue("application/json"));
 			_logger = logger;
 			_metrics = metrics;
-		}
+			_service = service;
+        }
 
 		[HttpGet("{id:int}")]
 		public async Task<IActionResult> Get(int id)
@@ -84,5 +88,12 @@ namespace Core.Renegociacao.Controllers
 			}
 
 		}
-	}
+
+        [HttpPost]
+        public EmprestimoRequest Create([FromBody] EmprestimoRequest request)
+        {
+            var result = _service.Processar(request);
+			return result;
+        }
+    }
 }

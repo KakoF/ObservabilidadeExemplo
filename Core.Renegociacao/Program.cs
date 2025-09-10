@@ -1,5 +1,6 @@
 using Core.Renegociacao.Meters;
 using Core.Renegociacao.Middleware;
+using Core.Renegociacao.Services;
 using OpenTelemetry;
 using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
@@ -58,6 +59,8 @@ builder.Services.AddOpenTelemetry()
 			options.Endpoint = new Uri(otelUrl);
 		}));
 builder.Services.AddSingleton<MetricsHelper>();
+builder.Services.AddScoped<EmprestimoService>();
+
 // Configuração de Logs
 builder.Logging.Configure(options =>
 {
