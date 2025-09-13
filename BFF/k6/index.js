@@ -10,6 +10,6 @@ export const options = {
 };
 
 export default function () {
-    http.get('http://localhost:7238/Emprestimo/1');
+    http.get('http://localhost:5121/Emprestimo/1');
     sleep(1);
 }
