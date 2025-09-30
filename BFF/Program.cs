@@ -89,7 +89,7 @@ app.UseAuthorization();
 
 app.MapControllers();
 
-app.UseMiddleware<ExceptionHandlingMiddleware>();
 app.UseMiddleware<MetricsMiddleware>();
+app.UseMiddleware<ExceptionHandlingMiddleware>();
 
 app.Run();
