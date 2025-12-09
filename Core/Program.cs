@@ -1,9 +1,5 @@
+using Core.Extensions;
 using Core.Middleware;
-using OpenTelemetry.Exporter;
-using OpenTelemetry.Logs;
-using OpenTelemetry.Metrics;
-using OpenTelemetry.Resources;
-using OpenTelemetry.Trace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -14,64 +10,9 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
-var otelUrl = builder.Configuration["Clients:Otel"];
-var resourceBuilder = ResourceBuilder.CreateDefault()
-	.AddService("Core")
-	.AddAttributes(new[]
-	{
-		new KeyValuePair<string, object>("app", "Core"),
-		new KeyValuePair<string, object>("env", builder.Environment.EnvironmentName),
-		new KeyValuePair<string, object>("host.name", Environment.MachineName)
-	});
 
-
-builder.Services.AddOpenTelemetry()
-	.ConfigureResource(resource => resource.AddService("Core").AddAttributes(new[]
-	{
-		new KeyValuePair<string, object>("app", "Core"),
-		new KeyValuePair<string, object>("env", builder.Environment.EnvironmentName),
-		new KeyValuePair<string, object>("host.name", Environment.MachineName)
-	}))
-	.WithTracing(tracing => tracing
-		.AddAspNetCoreInstrumentation()
-		//.AddHttpClientInstrumentation()
-		.SetResourceBuilder(resourceBuilder)
-		.AddOtlpExporter(opt =>
-		{
-			opt.Endpoint = new Uri(otelUrl);
-			opt.Protocol = OtlpExportProtocol.Grpc;
-		}))
-	.WithMetrics(metrics => metrics
-		.SetResourceBuilder(resourceBuilder)
-		.AddAspNetCoreInstrumentation()
-		.AddHttpClientInstrumentation()
-		.AddRuntimeInstrumentation()
-		.AddProcessInstrumentation()
-		.AddEventCountersInstrumentation(options =>
-		{
-			options.AddEventSources("Microsoft.AspNetCore.Hosting", "System.Net.Http");
-		})
-		.AddOtlpExporter(options =>
-		{
-			options.Endpoint = new Uri(otelUrl);
-		}));
-
-// Configuração de Logs
-builder.Logging.Configure(options =>
-{
-    options.ActivityTrackingOptions = ActivityTrackingOptions.TraceId | ActivityTrackingOptions.SpanId;
-});
-builder.Logging.AddOpenTelemetry(logging =>
-{
-	logging.IncludeFormattedMessage = true;
-	logging.IncludeScopes = true;
-	logging.AddOtlpExporter(options =>
-	{
-		//options.Endpoint = new Uri("http://otel:4317");
-		options.Endpoint = new Uri(otelUrl);
-	});
-});
-
+builder.AddOtel();
+builder.AddLog();
 
 var app = builder.Build();
 
